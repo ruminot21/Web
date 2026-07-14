@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Sitio oficial del canal de televisión">
+<title>Canal TV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<header class="header">
+  <div class="container nav">
+    <a href="#inicio" class="brand"><span class="brand-mark">TV</span><span id="brandName">CANAL TV</span></a>
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#inicio">Inicio</a><a href="#vivo">En vivo</a><a href="#programacion">Programación</a>
+      <a href="#programas">Programas</a><a href="#noticias">Noticias</a><a href="#contacto">Contacto</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <div class="container hero-grid">
+    <div>
+      <div class="live-badge"><span class="dot"></span> Transmitiendo ahora</div>
+      <h1 id="tagline">Tu canal <span class="gradient-text">siempre contigo</span></h1>
+      <p id="description"></p>
+      <div class="actions">
+        <a href="#vivo" class="btn btn-primary">▶ Ver en vivo</a>
+        <a href="#programacion" class="btn btn-secondary">Ver programación</a>
+      </div>
+    </div>
+    <div class="video-card">
+      <div class="video" id="live"></div>
+      <div class="now"><div><small style="color:var(--muted)">AHORA</small><strong style="display:block">Señal oficial</strong></div><span class="tag">EN VIVO</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="programacion"><div class="container"><h2 class="title">Programación</h2><p class="subtitle">Consulta todos los programas de la semana.</p><div class="days" id="days"></div><div class="schedule" id="schedule"></div></div></section>
+<section class="section" id="programas"><div class="container"><h2 class="title">Programas</h2><p class="subtitle">Contenido informativo, cultural y de entretenimiento.</p><div class="cards" id="programs"></div></div></section>
+<section class="section" id="noticias"><div class="container"><h2 class="title">Noticias</h2><p class="subtitle">Últimas novedades del canal.</p><div class="cards" id="news"></div></div></section>
+<section class="section"><div class="container"><h2 class="title">Presentadores</h2><div class="presenters" id="presenters"></div></div></section>
+<section class="section"><div class="container"><div class="card"><span class="tag">PUBLICIDAD</span><h2 id="adTitle"></h2><p id="adText"></p></div></div></section>
+<section class="section" id="contacto"><div class="container"><h2 class="title">Contacto</h2><div class="contact-grid"><div class="card"><h3>Dirección</h3><p id="address"></p></div><div class="card"><h3>Teléfono</h3><p id="phone"></p></div><div class="card"><h3>Correo</h3><p id="email"></p></div></div></div></section>
+</main>
+
+<footer class="footer"><div class="container footer-flex"><div id="footerName"></div><div class="socials" id="socials"></div></div></footer>
+<a class="wa" id="wa" target="_blank">W</a>
+<script src="assets/app.js"></script>
+</body>
+</html>
