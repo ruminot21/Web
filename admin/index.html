@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Administrador | Canal TV</title>
+<style>
+:root{--bg:#07111f;--card:#111f33;--text:#f5f7fb;--muted:#aab6c7;--p:#e51f45;--b:rgba(255,255,255,.1)}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}.wrap{width:min(1120px,94%);margin:32px auto}.card{background:var(--card);border:1px solid var(--b);border-radius:18px;padding:22px;margin-bottom:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}label{display:grid;gap:7px;color:var(--muted)}input,textarea{width:100%;padding:12px;border-radius:11px;border:1px solid var(--b);background:#0b1728;color:white}textarea{min-height:95px}.btn{border:0;border-radius:11px;padding:12px 16px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--p),#ff7a18);color:white}.secondary{background:#ffffff10;border:1px solid var(--b)}.danger{background:#8d1830}.actions{display:flex;gap:10px;flex-wrap:wrap}.login{width:min(420px,92%);margin:90px auto}.hidden{display:none}.item{border:1px solid var(--b);border-radius:13px;padding:14px;margin:10px 0}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.small{color:var(--muted);font-size:.9rem}a{text-decoration:none}@media(max-width:700px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="login card" id="loginBox">
+<h2>Acceso administrador</h2>
+<p class="small">Usuario: <b>admin</b> · Contraseña: <b>canal123</b></p>
+<label>Usuario<input id="user"></label><br>
+<label>Contraseña<input id="pass" type="password"></label><br>
+<button class="btn" id="loginBtn">Entrar</button><p id="loginMsg" class="small"></p>
+</div>
+
+<div class="wrap hidden" id="panel">
+<div class="top"><div><h1>Panel de administración</h1><p class="small">Ruta del panel: /admin</p></div><a href="../index.html" class="btn secondary">Ver página</a></div>
+
+<div class="card"><h2>Configuración general</h2><div class="grid">
+<label>Nombre del canal<input id="channelName"></label>
+<label>Frase principal<input id="tagline"></label>
+<label class="full">Descripción<textarea id="description"></textarea></label>
+<label class="full">URL de transmisión<input id="liveUrl" placeholder="https://www.youtube.com/embed/ID"></label>
+<label>WhatsApp<input id="whatsapp"></label><label>Correo<input id="email"></label>
+<label>Teléfono<input id="phone"></label><label>Dirección<input id="address"></label>
+</div></div>
+
+<div class="card"><h2>Redes sociales</h2><div class="grid">
+<label>Facebook<input id="facebook"></label><label>Instagram<input id="instagram"></label>
+<label>YouTube<input id="youtube"></label><label>TikTok<input id="tiktok"></label>
+<label>X / Twitter<input id="twitter"></label>
+</div></div>
+
+<div class="card"><h2>Publicidad</h2><div class="grid"><label>Título<input id="adTitle"></label><label>Texto<input id="adText"></label></div></div>
+<div class="card"><div class="top"><h2>Noticias</h2><button class="btn secondary" onclick="addNews()">Agregar</button></div><div id="newsList"></div></div>
+<div class="card"><div class="top"><h2>Programas</h2><button class="btn secondary" onclick="addProgram()">Agregar</button></div><div id="programList"></div></div>
+<div class="card"><div class="top"><h2>Presentadores</h2><button class="btn secondary" onclick="addPresenter()">Agregar</button></div><div id="presenterList"></div></div>
+<div class="card"><h2>Programación semanal</h2><p class="small">Se edita en formato JSON.</p><textarea id="scheduleJson" style="min-height:340px"></textarea></div>
+
+<div class="card"><div class="actions">
+<button class="btn" onclick="saveAll()">Guardar cambios</button>
+<button class="btn secondary" onclick="exportData()">Exportar copia</button>
+<label class="btn secondary" style="display:inline-block">Importar copia<input id="importFile" type="file" accept=".json" hidden></label>
+<button class="btn danger" onclick="resetData()">Restablecer</button>
+<button class="btn secondary" onclick="logout()">Cerrar sesión</button>
+</div><p id="msg" class="small"></p></div>
+</div>
+
+<script>
+const DEFAULT_DATA={"channelName": "CANAL TV", "tagline": "Información y entretenimiento, siempre contigo", "description": "Mira nuestra señal en vivo, consulta la programación y conoce las últimas noticias del canal.", "liveUrl": "", "whatsapp": "000000000000", "email": "contacto@canaltv.com", "phone": "+00 000 000 0000", "address": "Ciudad, País", "facebook": "#", "instagram": "#", "youtube": "#", "tiktok": "#", "twitter": "#", "adTitle": "Espacio publicitario disponible", "adText": "Promociona tu marca, producto o servicio en nuestro canal.", "news": [{"category": "DESTACADO", "title": "Noticia principal del canal", "summary": "Publica aquí la noticia más importante del día."}, {"category": "ACTUALIDAD", "title": "Segunda noticia destacada", "summary": "Agrega información breve y clara para tus visitantes."}, {"category": "DEPORTES", "title": "Actualidad deportiva", "summary": "Resultados, entrevistas y análisis deportivo."}], "programs": [{"name": "Noticias Central", "description": "Resumen completo de las noticias más importantes del día."}, {"name": "Mañanas en Vivo", "description": "Actualidad, invitados, cocina, salud y entretenimiento."}, {"name": "Zona Deportiva", "description": "Resultados, análisis y entrevistas del mundo deportivo."}], "presenters": [{"name": "Ana Martínez", "show": "Noticias Central", "initials": "AM"}, {"name": "Carlos Ramírez", "show": "Zona Deportiva", "initials": "CR"}, {"name": "Laura Sánchez", "show": "Mañanas en Vivo", "initials": "LS"}], "schedule": {"Lunes": [{"time": "06:00", "title": "Primera Hora", "description": "Noticias y clima", "category": "En vivo"}, {"time": "09:00", "title": "Mañanas en Vivo", "description": "Magazine y entrevistas", "category": "Magazine"}, {"time": "21:00", "title": "Noticias Central", "description": "Edición principal", "category": "Noticias"}], "Martes": [{"time": "06:00", "title": "Primera Hora", "description": "Noticias y clima", "category": "En vivo"}, {"time": "18:00", "title": "Zona Deportiva", "description": "Análisis y resultados", "category": "Deportes"}], "Miércoles": [{"time": "10:00", "title": "Salud y Vida", "description": "Bienestar y prevención", "category": "Salud"}], "Jueves": [{"time": "19:00", "title": "Debate Abierto", "description": "Análisis de actualidad", "category": "Opinión"}], "Viernes": [{"time": "20:00", "title": "Show de Viernes", "description": "Música e invitados", "category": "Entretenimiento"}], "Sábado": [{"time": "15:00", "title": "Especial Documental", "description": "Historias y reportajes", "category": "Documental"}], "Domingo": [{"time": "20:00", "title": "Resumen Deportivo", "description": "Lo mejor de la semana", "category": "Deportes"}]}};
+let data;
+const fields=['channelName','tagline','description','liveUrl','whatsapp','email','phone','address','facebook','instagram','youtube','tiktok','twitter','adTitle','adText'];
+function load(){try{data=JSON.parse(localStorage.getItem('canalTVData'))||structuredClone(DEFAULT_DATA)}catch(e){data=structuredClone(DEFAULT_DATA)}}
+function showPanel(){loginBox.classList.add('hidden');panel.classList.remove('hidden');load();fields.forEach(f=>document.getElementById(f).value=data[f]||'');scheduleJson.value=JSON.stringify(data.schedule,null,2);renderLists()}
+loginBtn.onclick=()=>{if(user.value==='admin'&&pass.value==='canal123'){sessionStorage.setItem('canalAdmin','1');showPanel()}else loginMsg.textContent='Datos incorrectos.'}
+if(sessionStorage.getItem('canalAdmin')==='1')showPanel();
+function renderLists(){
+newsList.innerHTML=data.news.map((x,i)=>`<div class="item grid"><label>Categoría<input value="${x.category}" onchange="data.news[${i}].category=this.value"></label><label>Título<input value="${x.title}" onchange="data.news[${i}].title=this.value"></label><label class="full">Resumen<textarea onchange="data.news[${i}].summary=this.value">${x.summary}</textarea></label><button class="btn danger" onclick="data.news.splice(${i},1);renderLists()">Eliminar</button></div>`).join('');
+programList.innerHTML=data.programs.map((x,i)=>`<div class="item grid"><label>Nombre<input value="${x.name}" onchange="data.programs[${i}].name=this.value"></label><label>Descripción<input value="${x.description}" onchange="data.programs[${i}].description=this.value"></label><button class="btn danger" onclick="data.programs.splice(${i},1);renderLists()">Eliminar</button></div>`).join('');
+presenterList.innerHTML=data.presenters.map((x,i)=>`<div class="item grid"><label>Nombre<input value="${x.name}" onchange="data.presenters[${i}].name=this.value"></label><label>Programa<input value="${x.show}" onchange="data.presenters[${i}].show=this.value"></label><label>Iniciales<input value="${x.initials}" onchange="data.presenters[${i}].initials=this.value"></label><button class="btn danger" onclick="data.presenters.splice(${i},1);renderLists()">Eliminar</button></div>`).join('');
+}
+function addNews(){data.news.push({category:'NUEVA',title:'Nueva noticia',summary:'Resumen'});renderLists()}
+function addProgram(){data.programs.push({name:'Nuevo programa',description:'Descripción'});renderLists()}
+function addPresenter(){data.presenters.push({name:'Nuevo presentador',show:'Programa',initials:'NP'});renderLists()}
+function saveAll(){fields.forEach(f=>data[f]=document.getElementById(f).value);try{data.schedule=JSON.parse(scheduleJson.value)}catch(e){msg.textContent='Error en el JSON de programación.';return}localStorage.setItem('canalTVData',JSON.stringify(data));msg.textContent='Cambios guardados.'}
+function exportData(){saveAll();const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='canal-tv.json';a.click()}
+importFile.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);localStorage.setItem('canalTVData',JSON.stringify(data));showPanel();msg.textContent='Copia importada.'}catch(err){msg.textContent='Archivo inválido.'}};r.readAsText(f)}
+function resetData(){if(confirm('¿Restablecer todos los datos?')){localStorage.removeItem('canalTVData');showPanel();msg.textContent='Datos restablecidos.'}}
+function logout(){sessionStorage.removeItem('canalAdmin');location.reload()}
+</script>
+</body>
+</html>
